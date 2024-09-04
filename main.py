@@ -102,3 +102,24 @@ class Agent():
             target_param.data.copy_(tao*local_param.data + (1.0-tao)*target_param.data)
     
     
+agent = Agent(state_size,number_actions)
+
+number_episodes = 200000
+max_t = 10000
+epsilon_start = 1.0
+eplison_decay = 0.995
+epsilon_end = 0.01
+epsilon = epsilon_start
+scores_deque = deque(maxlen=100)
+
+for episode in range(1,number_episodes+1):
+    state,_ = env.reset()
+    score=0
+    for t in range(max_t):
+        action = agent.act(state,epsilon)
+        next_state, reward, done, _ = env.step(action)
+        agent.step(state,action,reward,next_state,done)
+        state = next_state
+        score += reward
+        if done:
+            break
