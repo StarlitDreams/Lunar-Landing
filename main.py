@@ -37,7 +37,7 @@ state_size = env.observation_space.shape[0]
 number_actions = env.action_space.n
 
 learning_rate = 5e-4
-mini_batch_size = 30000
+mini_batch_size = 516
 gamma = 0.99
 replay_buffer_size = int(1e6)
 tao = 1e-3
