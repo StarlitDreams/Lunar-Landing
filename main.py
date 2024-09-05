@@ -9,6 +9,13 @@ import torch.autograd as autograd
 from torch.distributions import Categorical
 from collections import deque, namedtuple
 import gymnasium as gym
+import glob
+import io
+import base64
+import imageio
+from IPython.display import HTML, display
+from gym.wrappers.monitoring.video_recorder import VideoRecorder
+
 
 class Network(nn.Module):
     def __init__ (self,state_size,action_size, seed=42) -> None:
@@ -20,7 +27,7 @@ class Network(nn.Module):
     
     def forward(self,state) -> torch.Tensor:
         x = F.relu(self.fc1(state))
-        x = F.relu(self.fc2(state))
+        x = F.relu(self.fc2(x))
         return self.fc3(x)
 
     
@@ -51,9 +58,9 @@ class ReplayMemory(object):
         states = torch.from_numpy(np.vstack([e[0] for e in experiences if e is not None])).float().to(self.device)
         actions = torch.from_numpy(np.vstack([e[1] for e in experiences if e is not None])).to(self.device)
         rewards = torch.from_numpy(np.vstack([e[2] for e in experiences if e is not None])).float().to(self.device)
-        next_states = states = torch.from_numpy(np.vstack([e[3] for e in experiences if e is not None])).float().to(self.device)
-        dones = torch.from_numpy(np.vstack([e[4] for e in experiences if e is not None].astype(np.uint8))).float().to(self.device)
-        return next_states, actions, rewards, dones
+        next_states = torch.from_numpy(np.vstack([e[3] for e in experiences if e is not None])).float().to(self.device)
+        dones = torch.from_numpy(np.vstack([e[4] for e in experiences if e is not None]).astype(np.uint8)).float().to(self.device)
+        return states,next_states, actions, rewards, dones
         
     
 class Agent():
@@ -104,8 +111,8 @@ class Agent():
     
 agent = Agent(state_size,number_actions)
 
-number_episodes = 200000
-max_t = 10000
+number_episodes = 20000
+max_t = 1000
 epsilon_start = 1.0
 eplison_decay = 0.995
 epsilon_end = 0.01
@@ -117,9 +124,38 @@ for episode in range(1,number_episodes+1):
     score=0
     for t in range(max_t):
         action = agent.act(state,epsilon)
-        next_state, reward, done, _ = env.step(action)
+        next_state, reward, terminated,truncated, _ = env.step(action)
+        done = terminated or truncated
         agent.step(state,action,reward,next_state,done)
         state = next_state
         score += reward
         if done:
             break
+        
+    scores_deque.append(score)
+    epsilon=max(epsilon_end,epsilon*eplison_decay)
+    
+    
+    print('\rEpisode {} \tAverage score: {:.2f} '.format(episode, np.mean(scores_deque)),end="")
+    if episode % 100 == 0:
+        print('\rEpisode {} \tAverage score: {:.2f} '.format(episode, np.mean(scores_deque)))
+    if np.mean(scores_deque) >= 200.0:
+        print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(episode-100, np.mean(scores_deque)))
+        torch.save(agent.local_qnetwork.state_dict(), 'checkpoint.pth')
+        break
+    
+    
+def show_video_of_model(agent, env_name):
+    env = gym.make(env_name, render_mode='rgb_array')
+    state, _ = env.reset()
+    done = False
+    frames = []
+    while not done:
+        frame = env.render()
+        frames.append(frame)
+        action = agent.act(state)
+        state, reward, done, _, _ = env.step(action.item())
+    env.close()
+    imageio.mimsave('video.mp4', frames, fps=30)
+
+show_video_of_model(agent, 'LunarLander-v2')
