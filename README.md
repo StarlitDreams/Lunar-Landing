@@ -104,11 +104,9 @@ During the training process, the agent’s performance will be tracked. Once the
 
 Sample output:
 
-```
-![trained_agent_video-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/f4b2e4a4-e33c-4030-a1ad-c29a5a09471a)
-![Screenshot 2024-09-05 220104](https://github.com/user-attachments/assets/aea8f510-bcd1-44a5-b59c-2cb8ffb4597e)
+![trained_agent_video-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/9f6f7f30-4c79-4661-82b1-50faa7c7ee7a)
+![Screenshot 2024-09-05 220104](https://github.com/user-attachments/assets/6c27e4a6-3194-47ed-a0c8-565d6415e91c)
 
-```
 
 ## Watch the Agent Play
 
@@ -120,7 +118,7 @@ You can generate a new video of the trained agent using the following function:
 show_video_of_model(agent, 'LunarLander-v2')
 ```
 
-The video will be saved as `video.mp4` in the project directory.
+The video will be saved as `trained_agent_video.mp4` in the project directory.
 
 
 ## Contribution
