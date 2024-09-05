@@ -9,7 +9,6 @@ This repository contains the implementation of a Deep Q-Network (DQN) agent that
 - [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Training](#training)
-- [Usage](#usage)
 - [Results](#results)
 - [Contribution](#contribution)
 - [License](#license)
@@ -87,16 +86,6 @@ python main.py
 The DQN agent will interact with the environment over multiple episodes, updating its policy based on the experience replay and target networks. The training process will output the progress every 100 episodes and save a checkpoint of the model when the environment is solved (when the average score reaches 200.0 over 100 episodes).
 
 You can adjust the hyperparameters (e.g., learning rate, batch size) by modifying the constants defined in `main.py`.
-
-## Usage
-
-Once trained, the agent can be used to play the Lunar Lander environment. You can load the saved model (`checkpoint.pth`) and watch the agent in action.
-
-To run the agent:
-
-```bash
-python main.py 
-```
 
 ## Results
 
