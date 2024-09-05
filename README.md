@@ -26,7 +26,7 @@ The goal is for the agent to land the lunar lander on the target surface as smoo
 ├── main.py                 # Contains the code
 ├── README.md               # This readme file
 ├── checkpoint.pth          # Model weights after training (saved checkpoint)
-└── trained_agent_video.mp4               # Video recording of the trained agent
+└── trained_agent_video.mp4 # Video recording of the trained agent
 ```
 
 ## Dependencies
